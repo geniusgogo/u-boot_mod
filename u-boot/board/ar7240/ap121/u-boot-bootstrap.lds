@@ -52,6 +52,9 @@ SECTIONS
 	. = ALIGN(4);
 	.sdata  : { *(.sdata*) }
 
+	__u_boot_cmd_start = .;
+	.u_boot_cmd : { *(.u_boot_cmd) }
+	__u_boot_cmd_end = .;
 	uboot_end_data_bootstrap = .;
 	num_got_entries = (__got_end_bootstrap - __got_start_bootstrap) >> 2;
 

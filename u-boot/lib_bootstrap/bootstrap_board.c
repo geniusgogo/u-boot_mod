@@ -49,6 +49,8 @@ extern int timer_init(void);
 extern ulong uboot_end_data_bootstrap;
 extern ulong uboot_end_bootstrap;
 
+const char version_string[] =
+	U_BOOT_VERSION" (" __DATE__ " - " __TIME__ ")";
 /*
  * Begin and End of memory area for malloc(), and current "brk"
  */
@@ -94,6 +96,26 @@ static int init_func_ram(void){
 	return(1);
 }
 
+static int display_banner(void)
+{
+	return (0);
+}
+
+static int init_baudrate (void)
+{
+#if 0
+	char tmp[64];	/* long enough for environment variables */
+	int i = getenv_r ("baudrate", tmp, sizeof (tmp));
+
+	gd->baudrate = (i > 0)
+			? (int) simple_strtoul (tmp, NULL, 10)
+			: CONFIG_BAUDRATE;
+#endif
+
+	gd->baudrate = CONFIG_BAUDRATE;
+
+	return (0);
+}
 /*
  * Breath some life into the board...
  *
@@ -118,6 +140,11 @@ typedef int(init_fnc_t)(void);
 
 init_fnc_t *init_sequence[] = { timer_init,
                                 serial_init,
+#ifdef DEBUG_ENABLE_BOOTSTRAP_PRINTF
+	init_baudrate,		/* initialze baudrate settings */
+	console_init_f,
+	display_banner,		/* say that we are here */
+#endif
                                 init_func_ram,
                                 NULL, };
 
